@@ -13,7 +13,38 @@ module Bitbot
 
         # @abstract
         class Message
-          include Virtus
+          include Virtus::ValueObject
+
+          def private?
+            false
+          end
+
+          def status?
+            false
+          end
+        end
+
+        # Message to notify listeners about connection status
+        #
+        class StatusMessage < Message
+          def self.connected
+            new(type: "connected")
+          end
+
+          def self.disconnected
+            new(type: "disconnected")
+          end
+
+          def self.error(body)
+            new(type: "error", body: body)
+          end
+
+          attribute :type, String
+          attribute :body, String
+
+          def status?
+            true
+          end
         end
 
         # Notification that the user is subscribed to a channel
@@ -29,10 +60,11 @@ module Bitbot
         # A server notification, answer to a subscription, server warning, etc
         #
         class RemarkMessage < Message
-          def self.build(data)
-            puts data.inspect
+          def self.build(*)
             new
           end
+
+          attribute :todo, String, default: "TODO"
         end
 
         # Depth, trade and ticker messages
@@ -46,6 +78,10 @@ module Bitbot
             type = data.fetch("private")
             klass_name = Inflecto.camelize(type) + "Message"
             PrivateMessages.const_get(klass_name).new(data.fetch(type))
+          end
+
+          def private?
+            true
           end
         end
 
