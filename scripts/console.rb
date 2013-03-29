@@ -2,6 +2,7 @@ require "bitbot/live"
 
 class MyListener
   def message_received(message)
+    return unless message.is_a?(Bitbot::Live::MtGox::Messages::PrivateMessage)
     if message.type == :trade
       show_trade(message)
     end
@@ -38,6 +39,7 @@ end
 begin
   listener = MyListener.new
   mtgox = Bitbot::Live::MtGox.new(listener)
+  #mtgox.subscribe_to :trades
   EM.run { mtgox.start }
 rescue => e
   puts e.inspect

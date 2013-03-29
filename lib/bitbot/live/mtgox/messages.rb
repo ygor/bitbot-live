@@ -26,9 +26,13 @@ module Bitbot
         class UnsubscribeMessage < Message
         end
 
-        # A server message, usually a warning
+        # A server notification, answer to a subscription, server warning, etc
         #
         class RemarkMessage < Message
+          def self.build(data)
+            puts data.inspect
+            new
+          end
         end
 
         # Depth, trade and ticker messages
