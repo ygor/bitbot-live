@@ -18,4 +18,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "eventmachine"
+  spec.add_dependency "em-websocket-client", "~> 0.1"
+  spec.add_dependency "json"
+  spec.add_dependency "inflecto"
+  spec.add_dependency "virtus"
 end

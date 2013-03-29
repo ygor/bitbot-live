@@ -9,5 +9,5 @@ group :development do
 end
 
 group :metrics do
-  gem "reek"
+  gem "reek", git: "https://github.com/troessner/reek.git"
 end
