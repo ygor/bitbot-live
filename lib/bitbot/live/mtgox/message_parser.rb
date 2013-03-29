@@ -1,3 +1,5 @@
+require "json"
+
 module Bitbot
   module Live
     class MtGox

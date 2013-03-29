@@ -17,6 +17,10 @@ describe "Messages:" do
 
     message = MtGox::MessageParser.parse(raw_message)
     expect(message).to be_a(MtGox::Messages::PrivateMessages::TradeMessage)
+    expect(message).to be_bid
+    expect(message.amount).to eq(1.0005)
+    expect(message.price).to eq(71.06028)
+    expect(message.currency).to eq("EUR")
   end
 
   it "parses a ticker message" do

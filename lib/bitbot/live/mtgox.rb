@@ -1,11 +1,10 @@
-require "json"
 require "eventmachine"
 require "em-websocket-client"
 
 module Bitbot
   module Live
     class MtGox
-      HOST = "ws://websocket.mtgox.com/mtgox"
+      HOST = "ws://websocket.mtgox.com/mtgox?Currency=USD"
 
       def initialize(listener)
         @listener = listener
@@ -28,7 +27,7 @@ module Bitbot
 
       def publish(raw_message)
         message = MessageParser.parse(raw_message)
-        process :trade_message_received, message
+        process :message_received, message
       end
     end
   end

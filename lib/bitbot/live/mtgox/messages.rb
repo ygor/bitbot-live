@@ -13,10 +13,7 @@ module Bitbot
 
         # @abstract
         class Message
-          # @param [Hash] data
-          def self.build(data)
-            raise NotImplementedError
-          end
+          include Virtus
         end
 
         # Notification that the user is subscribed to a channel
@@ -39,9 +36,8 @@ module Bitbot
         # @abstract
         #
         class PrivateMessage < Message
-          include Virtus
-
           # @param [Hash] data
+          # @return [PrivateMessage]
           def self.build(data)
             type = data.fetch("private")
             klass_name = Inflecto.camelize(type) + "Message"
@@ -54,21 +50,59 @@ module Bitbot
           #
           class DepthMessage < PrivateMessage
             attribute :price, BigDecimal
+
+            def type
+              :depth
+            end
           end
 
           # Trades, as they occur
           #
           class TradeMessage < PrivateMessage
+            attribute :trade_type,     String
+            attribute :amount_int,     Integer, reader: :private
+            attribute :price_int,      Integer, reader: :private
+            attribute :price_currency, String,  reader: :private
+
+            def bid?
+              trade_type == "bid"
+            end
+
+            def ask?
+              !bid?
+            end
+
+            def amount
+              amount_int.to_f / 1_0000_0000
+            end
+
+            def price
+              price_int.to_f / 1_000_00
+            end
+
+            def currency
+              price_currency
+            end
+
+            def type
+              :trade
+            end
           end
 
           # Information about the market
           #
           class TickerMessage < PrivateMessage
+            def type
+              :ticker
+            end
           end
 
           # The result of a websocket-encapsulated version 1 HTTP API request
           #
           class ResultMessage < PrivateMessage
+            def type
+              :result
+            end
           end
         end
 
