@@ -7,7 +7,8 @@ describe "Messages:" do
     JSON
 
     message = MtGox::MessageParser.parse(raw_message)
-    expect(message.price).to eq(88.00001)
+    expect(message).to be_a(Depth)
+    expect(message.price).to be_decimal(88.00001)
   end
 
   it "parses a trade message" do
@@ -16,11 +17,13 @@ describe "Messages:" do
     JSON
 
     message = MtGox::MessageParser.parse(raw_message)
-    expect(message).to be_a(MtGox::Messages::PrivateMessages::TradeMessage)
+    expect(message).to be_a(Trade)
     expect(message).to be_bid
-    expect(message.amount).to eq(1.0005)
-    expect(message.price).to eq(71.06028)
-    expect(message.currency).to eq("EUR")
+    expect(message.amount).to be_decimal(1.0005)
+
+    price = message.price
+    expect(price.value).to be_decimal(71.06028)
+    expect(price.currency).to eq("EUR")
   end
 
   it "parses a ticker message" do
@@ -29,14 +32,14 @@ describe "Messages:" do
     JSON
 
     message = MtGox::MessageParser.parse(raw_message)
-    expect(message).to be_a(MtGox::Messages::PrivateMessages::TickerMessage)
-    expect(message.average.price).to eq(88.30862)
-    expect(message.buy.price).to eq(88.89748)
-    expect(message.high.price).to eq(94.99)
-    expect(message.last_trade.price).to eq(89.5)
-    expect(message.low.price).to eq(75.00111)
-    expect(message.sell.price).to eq(89.5)
-    expect(message.volume.size).to eq(155069.16984285)
+    expect(message).to be_a(Ticker)
+    expect(message.average.value).to    be_decimal(88.30862)
+    expect(message.buy.value).to        be_decimal(88.89748)
+    expect(message.high.value).to       be_decimal(94.99)
+    expect(message.last_trade.value).to be_decimal(89.5)
+    expect(message.low.value).to        be_decimal(75.00111)
+    expect(message.sell.value).to       be_decimal(89.5)
+    expect(message.volume.size).to      be_decimal(155069.16984285)
   end
 
   it "parses a result message"

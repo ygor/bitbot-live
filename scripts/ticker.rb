@@ -2,9 +2,9 @@ require "bitbot/live"
 
 class MyListener
   def message_received(message)
-    if message.private? && message.type == :ticker
+    if message.is_a?(Bitbot::Live::Ticker)
       show_ticker(message)
-    elsif message.status?
+    elsif message.is_a?(Bitbot::Live::Status)
       puts message.inspect
     end
   end
@@ -13,10 +13,10 @@ class MyListener
 
   def show_ticker(ticker)
     content = [
-      "High: %5.5f" % ticker.high.price,
-      "Low: %5.5f"  % ticker.low.price,
-      "Buy: %5.5f"  % ticker.buy.price,
-      "Sell: %5.5f" % ticker.sell.price
+      "High: %5.5f" % ticker.high.value,
+      "Low: %5.5f"  % ticker.low.value,
+      "Buy: %5.5f"  % ticker.buy.value,
+      "Sell: %5.5f" % ticker.sell.value
     ].join(" | ")
 
     puts content

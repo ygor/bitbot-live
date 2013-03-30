@@ -21,5 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "em-websocket-client", "~> 0.1"
   spec.add_dependency "json"
   spec.add_dependency "inflecto"
-  spec.add_dependency "virtus"
+  # Add when virtus 0.6 is released
+  #spec.add_dependency "virtus"
 end

@@ -7,12 +7,15 @@ if ENV["COVERAGE"] == "true"
     Coveralls::SimpleCov::Formatter
   ]
 
-  SimpleCov.start
+  SimpleCov.start do
+    add_filter "spec"
+  end
 end
 
 require "devtools/spec_helper"
 require "bitbot/live"
 
 Dir[File.dirname(__FILE__) + "/shared/**/*.rb"].each {|f| require f}
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
 include Bitbot::Live

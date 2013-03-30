@@ -2,9 +2,9 @@ require "bitbot/live"
 
 class MyListener
   def message_received(message)
-    if message.private? && message.type == :trade
+    if message.is_a?(Bitbot::Live::Trade)
       show_trade(message)
-    elsif message.status?
+    elsif message.is_a?(Bitbot::Live::Status)
       puts message.inspect
     end
   end
@@ -12,9 +12,9 @@ class MyListener
   private
 
   def show_trade(trade)
-    price  = "%5.5f" % trade.price
+    price  = "%5.5f" % trade.price.value
     amount = "%5.8f" % trade.amount
-    currency = trade.currency
+    currency = trade.price.currency
 
     if trade.bid?
       puts "BUY:  \t #{price} #{currency} x #{amount}"

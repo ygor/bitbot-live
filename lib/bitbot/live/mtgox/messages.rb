@@ -14,37 +14,6 @@ module Bitbot
         # @abstract
         class Message
           include Virtus::ValueObject
-
-          def private?
-            false
-          end
-
-          def status?
-            false
-          end
-        end
-
-        # Message to notify listeners about connection status
-        #
-        class StatusMessage < Message
-          def self.connected
-            new(type: "connected")
-          end
-
-          def self.disconnected
-            new(type: "disconnected")
-          end
-
-          def self.error(body)
-            new(type: "error", body: body)
-          end
-
-          attribute :type, String
-          attribute :body, String
-
-          def status?
-            true
-          end
         end
 
         # Notification that the user is subscribed to a channel
@@ -77,11 +46,11 @@ module Bitbot
           def self.build(data)
             type = data.fetch("private")
             klass_name = Inflecto.camelize(type) + "Message"
-            PrivateMessages.const_get(klass_name).new(data.fetch(type))
+            PrivateMessages.const_get(klass_name).new(data.fetch(type)).generate
           end
 
-          def private?
-            true
+          def generate
+            self
           end
         end
 
@@ -89,10 +58,10 @@ module Bitbot
           # Message about orders placed or removed
           #
           class DepthMessage < PrivateMessage
-            attribute :price, BigDecimal
+            attribute :price_int, String
 
-            def type
-              :depth
+            def generate
+              Depth.new(price: BigDecimal(price_int) / 1_000_00)
             end
           end
 
@@ -100,89 +69,81 @@ module Bitbot
           #
           class TradeMessage < PrivateMessage
             attribute :trade_type,     String
-            attribute :amount_int,     Integer, reader: :private
-            attribute :price_int,      Integer, reader: :private
-            attribute :price_currency, String,  reader: :private
+            attribute :amount_int,     String
+            attribute :price_int,      String
+            attribute :price_currency, String
 
-            def bid?
-              trade_type == "bid"
-            end
-
-            def ask?
-              !bid?
-            end
-
-            def amount
-              amount_int.to_f / 1_0000_0000
-            end
-
-            def price
-              price_int.to_f / 1_000_00
-            end
-
-            def currency
-              price_currency
-            end
-
-            def type
-              :trade
+            def generate
+              Trade.new(
+                bid: trade_type == "bid",
+                amount: BigDecimal(amount_int) / 1_0000_0000,
+                price: Price.new(
+                  value: BigDecimal(price_int) / 1_000_00,
+                  currency: price_currency
+                )
+              )
             end
           end
 
           # Information about the market
           #
           class TickerMessage < PrivateMessage
-            class PriceWrapper
-              include Virtus::ValueObject
-
-              attribute :value_int, Integer
+            class ValueWrapper
+              include Virtus
+              attribute :value_int, BigDecimal
               attribute :currency, String
+            end
 
-              def price
-                value_int.to_f / 1_000_00
+            class Writer < Virtus::Attribute::Writer::Coercible
+              def coerce(hash)
+                value = ValueWrapper.new(hash)
+                util = self.class
+
+                {
+                  util.value_column => value.value_int / util.divider,
+                  currency: value.currency
+                }
               end
             end
 
-            class Volume
-              include Virtus::ValueObject
-              attribute :value_int, Integer
-              attribute :currency, String
-
-              def size
-                value_int.to_f / 1_0000_0000
-              end
+            # Fetches price from ticker message
+            class PriceWriter < Writer
+              def self.value_column; :value; end
+              def self.divider; 1_000_00; end
             end
 
-            attribute :avg,        PriceWrapper, reader: :private
-            attribute :buy,        PriceWrapper
-            attribute :high,       PriceWrapper
-            attribute :low,        PriceWrapper
-            attribute :sell,       PriceWrapper
-            attribute :last_local, PriceWrapper, reader: :private
-            attribute :vol,        Volume,       reader: :private
-
-            def type
-              :ticker
+            # Fetches volume from ticker message
+            class VolumeWriter < Writer
+              def self.value_column; :size; end
+              def self.divider; 1_0000_0000; end
             end
 
-            def average
-              avg
-            end
+            attribute :avg,        Price,  writer_class: PriceWriter
+            attribute :buy,        Price,  writer_class: PriceWriter
+            attribute :high,       Price,  writer_class: PriceWriter
+            attribute :low,        Price,  writer_class: PriceWriter
+            attribute :sell,       Price,  writer_class: PriceWriter
+            attribute :last_local, Price,  writer_class: PriceWriter
+            attribute :vol,        Volume, writer_class: VolumeWriter
 
-            def last_trade
-              last_local
-            end
-
-            def volume
-              vol
+            def generate
+              Ticker.new(
+                high:       high,
+                average:    avg,
+                low:        low,
+                buy:        buy,
+                sell:       sell,
+                last_trade: last_local,
+                volume:     vol
+              )
             end
           end
 
           # The result of a websocket-encapsulated version 1 HTTP API request
           #
           class ResultMessage < PrivateMessage
-            def type
-              :result
+            def generate
+              OpenStruct.new
             end
           end
         end

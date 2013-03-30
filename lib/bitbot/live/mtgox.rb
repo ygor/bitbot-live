@@ -22,20 +22,17 @@ module Bitbot
       private
 
       def connected
-        message = Messages::StatusMessage.connected
-        process message
+        process Statuses::CONNECTED
       end
 
       def disconnected
-        message = Messages::StatusMessage.disconnected
-        process message
+        process Statuses::DISCONNECTED
 
         start
       end
 
       def error(message)
-        message = Messages::StatusMessage.error(message)
-        process message
+        process Status.error(message)
       end
 
       def publish(raw_message)
