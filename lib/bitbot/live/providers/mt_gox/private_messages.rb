@@ -55,10 +55,10 @@ module Bitbot
               Trade.new(
                 bid: trade_type == "bid",
                 amount: BigDecimal(amount_int) / 1_0000_0000,
-                price: Price.new(
+                price: {
                   value: BigDecimal(price_int) / 1_000_00,
                   currency: price_currency
-                )
+                }
               )
             end
           end
