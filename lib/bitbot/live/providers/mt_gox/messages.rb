@@ -48,8 +48,7 @@ module Bitbot
             #
             def self.build(data)
               type = data.fetch("private")
-              klass_name = Inflecto.camelize(type) + "Message"
-              PrivateMessages.const_get(klass_name).new(data.fetch(type)).generate
+              PrivateMessages.get_class(type).new(data.fetch(type)).generate
             end
           end
 

@@ -1,3 +1,4 @@
+require "inflecto"
 require "virtus"
 
 module Bitbot
@@ -5,6 +6,16 @@ module Bitbot
     module Providers
       class MtGox
         module PrivateMessages
+          # @param [String] type
+          #
+          # @return [Class]
+          #   A class of one of the PrivateMessages classes
+          #
+          def self.get_class(type)
+            klass_name = Inflecto.camelize(type) + "Message"
+            const_get(klass_name)
+          end
+
           # Message about orders placed or removed
           #
           class DepthMessage
