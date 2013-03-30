@@ -132,8 +132,49 @@ module Bitbot
           # Information about the market
           #
           class TickerMessage < PrivateMessage
+            class PriceWrapper
+              include Virtus::ValueObject
+
+              attribute :value_int, Integer
+              attribute :currency, String
+
+              def price
+                value_int.to_f / 1_000_00
+              end
+            end
+
+            class Volume
+              include Virtus::ValueObject
+              attribute :value_int, Integer
+              attribute :currency, String
+
+              def size
+                value_int.to_f / 1_0000_0000
+              end
+            end
+
+            attribute :avg,        PriceWrapper, reader: :private
+            attribute :buy,        PriceWrapper
+            attribute :high,       PriceWrapper
+            attribute :low,        PriceWrapper
+            attribute :sell,       PriceWrapper
+            attribute :last_local, PriceWrapper, reader: :private
+            attribute :vol,        Volume,       reader: :private
+
             def type
               :ticker
+            end
+
+            def average
+              avg
+            end
+
+            def last_trade
+              last_local
+            end
+
+            def volume
+              vol
             end
           end
 

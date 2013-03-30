@@ -30,6 +30,13 @@ describe "Messages:" do
 
     message = MtGox::MessageParser.parse(raw_message)
     expect(message).to be_a(MtGox::Messages::PrivateMessages::TickerMessage)
+    expect(message.average.price).to eq(88.30862)
+    expect(message.buy.price).to eq(88.89748)
+    expect(message.high.price).to eq(94.99)
+    expect(message.last_trade.price).to eq(89.5)
+    expect(message.low.price).to eq(75.00111)
+    expect(message.sell.price).to eq(89.5)
+    expect(message.volume.size).to eq(155069.16984285)
   end
 
   it "parses a result message"
