@@ -1,6 +1,7 @@
 # Bitbot::Live
 
 [![Build Status](https://secure.travis-ci.org/indrekj/bitbot-live.png?branch=master)](http://travis-ci.org/indrekj/bitbot-live)
+[![Dependency Status](https://gemnasium.com/indrekj/bitbot-live.png)](https://gemnasium.com/indrekj/bitbot-live)
 [![Code Climate](https://codeclimate.com/github/indrekj/bitbot-live.png)](https://codeclimate.com/github/indrekj/bitbot-live)
 [![Coverage Status](https://coveralls.io/repos/indrekj/bitbot-live/badge.png?branch=master)](https://coveralls.io/r/indrekj/bitbot-live)
 
