@@ -29,10 +29,10 @@ module Bitbot
             # @return [Depth]
             #
             def generate
-              price = Price.new(
+              price = {
                 value: price_int / 1_000_00,
                 currency: currency
-              )
+              }
               Depth.new(price: price)
             end
           end
