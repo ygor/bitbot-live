@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe MtGox do
+describe Providers::MtGox do
   subject(:worker) { described_class.new(listener, client) }
 
   let(:client)   { mock(:web_socket_client) }
@@ -12,7 +12,7 @@ describe MtGox do
   end
 
   it "connects with the websocket" do
-    client.should_receive(:connect).with(MtGox::HOST) { socket }
+    client.should_receive(:connect).with(Providers::MtGox::HOST) { socket }
     subject.start
   end
 
@@ -28,7 +28,7 @@ describe MtGox do
   it "reconnects after disconnect" do
     subject.start
 
-    client.should_receive(:connect).with(MtGox::HOST) { socket }
+    client.should_receive(:connect).with(Providers::MtGox::HOST) { socket }
     socket.disconnect.call
   end
 
@@ -55,7 +55,7 @@ describe MtGox do
     subject.start
 
     message = stub
-    MtGox::MessageParser.stub(:parse).with("RAW") { message }
+    Providers::MtGox::MessageParser.stub(:parse).with("RAW") { message }
 
     socket.stream.call("RAW")
 

@@ -24,5 +24,5 @@ class MyListener
 end
 
 listener = MyListener.new
-mtgox = Bitbot::Live::MtGox.new(listener)
+mtgox = Bitbot::Live::Providers::MtGox.new(listener)
 EM.run { mtgox.start }

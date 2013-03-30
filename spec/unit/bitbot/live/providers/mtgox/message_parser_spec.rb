@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe MtGox::MessageParser do
+describe Providers::MtGox::MessageParser do
   describe ".parse" do
     let(:operation) { "operation" }
     let(:data) { JSON.dump({"op" => operation}) }
@@ -11,7 +11,7 @@ describe MtGox::MessageParser do
           new(data)
         end
       end
-      MtGox::Messages.stub(:get_class).with(operation) { operation_class }
+      Providers::MtGox::Messages.stub(:get_class).with(operation) { operation_class }
 
       result = described_class.parse(data)
       expect(result).to be_a(operation_class)
