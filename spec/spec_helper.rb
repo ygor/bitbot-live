@@ -10,6 +10,7 @@ if ENV["COVERAGE"] == "true"
   SimpleCov.start
 end
 
+require "devtools/spec_helper"
 require "bitbot/live"
 
 Dir[File.dirname(__FILE__) + "/shared/**/*.rb"].each {|f| require f}
