@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Providers::MtGox::Messages::PrivateMessages::TickerMessage do
+describe Providers::MtGox::PrivateMessages::TickerMessage do
   subject { described_class.new(options) }
 
   it_behaves_like "a private message"
