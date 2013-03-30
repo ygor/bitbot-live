@@ -8,7 +8,10 @@ describe "Messages:" do
 
     message = Providers::MtGox::MessageParser.parse(raw_message)
     expect(message).to be_a(Depth)
-    expect(message.price).to be_decimal(88.00001)
+
+    price = message.price
+    expect(price.value).to be_decimal(88.00001)
+    expect(price.currency).to eq("USD")
   end
 
   it "parses a trade message" do

@@ -59,10 +59,15 @@ module Bitbot
             # Message about orders placed or removed
             #
             class DepthMessage < PrivateMessage
-              attribute :price_int, String
+              attribute :price_int, BigDecimal
+              attribute :currency, String
 
               def generate
-                Depth.new(price: BigDecimal(price_int) / 1_000_00)
+                price = Price.new(
+                  value: price_int / 1_000_00,
+                  currency: currency
+                )
+                Depth.new(price: price)
               end
             end
 

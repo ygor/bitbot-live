@@ -5,7 +5,7 @@ module Bitbot
     class Depth
       include Virtus::ValueObject
 
-      attribute :price, BigDecimal
+      attribute :price, Price
     end
   end
 end
