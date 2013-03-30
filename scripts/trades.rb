@@ -24,11 +24,6 @@ class MyListener
   end
 end
 
-begin
-  listener = MyListener.new
-  mtgox = Bitbot::Live::MtGox.new(listener)
-  EM.run { mtgox.start }
-rescue => e
-  puts e.inspect
-  puts e.backtrace.join("\n")
-end
+listener = MyListener.new
+mtgox = Bitbot::Live::MtGox.new(listener)
+EM.run { mtgox.start }
