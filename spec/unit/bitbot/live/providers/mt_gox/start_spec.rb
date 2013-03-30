@@ -1,8 +1,9 @@
 require "spec_helper"
 
-describe Providers::MtGox do
-  subject(:worker) { described_class.new(listener, client) }
+describe Providers::MtGox, "#start" do
+  subject { worker.start }
 
+  let(:worker)   { described_class.new(listener, client) }
   let(:client)   { mock(:web_socket_client) }
   let(:listener) { ListenerMock.new }
   let(:socket)   { WebSocketClientMock.new }
@@ -13,11 +14,11 @@ describe Providers::MtGox do
 
   it "connects with the websocket" do
     client.should_receive(:connect).with(Providers::MtGox::HOST) { socket }
-    subject.start
+    subject
   end
 
   it "sends connection established notification after connect" do
-    subject.start
+    subject
     socket.callback.call
 
     messages = listener.messages
@@ -26,14 +27,14 @@ describe Providers::MtGox do
   end
 
   it "reconnects after disconnect" do
-    subject.start
+    subject
 
     client.should_receive(:connect).with(Providers::MtGox::HOST) { socket }
     socket.disconnect.call
   end
 
   it "sends notification about disconnect after disconnect" do
-    subject.start
+    subject
     socket.disconnect.call
 
     messages = listener.messages
@@ -42,7 +43,7 @@ describe Providers::MtGox do
   end
 
   it "sends notification after error" do
-    subject.start
+    subject
     socket.errback.call("Ouch")
 
     messages = listener.messages
@@ -52,7 +53,7 @@ describe Providers::MtGox do
   end
 
   it "sends message after receive" do
-    subject.start
+    subject
 
     message = stub
     Providers::MtGox::MessageParser.stub(:parse).with("RAW") { message }
