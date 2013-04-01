@@ -11,11 +11,25 @@ module Bitbot
       class MtGox
         HOST = "https://websocket.mtgox.com:80/mtgox?Currency=USD"
 
+        # Initializes MtGox provider
+        #
+        # @param [Object] listener
+        #   Messages and status nofifications are sent to it. To receive
+        #   trade messages, it should implement #trade_received method.
+        #
+        # @client [#connect] web socket client
+        #
+        # @return [undefined]
+        #
         def initialize(listener, client = EM::WebSocketClient)
           @listener = listener
           @client   = client
         end
 
+        # Connects with the websocket to receive messages
+        #
+        # @return [undefined]
+        #
         def start
           @socket = @client.connect(HOST)
           @socket.stream     { |raw_message| publish raw_message }
@@ -26,28 +40,52 @@ module Bitbot
 
         private
 
+        # Sends connected status notification to the listener
+        #
+        # @return [undefined]
+        #
         def connected
           process Statuses::CONNECTED
         end
 
+        # Sends disconnected status notification to the listener
+        #
+        # @return [undefined]
+        #
         def disconnected
           process Statuses::DISCONNECTED
 
           start
         end
 
-        def error(message)
-          process Status.error(message)
+        # Sends error message to the listener
+        #
+        # @param [String] raw_message
+        #   JSON encoded message
+        #
+        # @return [undefined]
+        #
+        def error(raw_message)
+          process Status.error(raw_message)
         end
 
+        # Parses raw message and sends it to the listener
+        #
+        # @param [String] raw_message
+        #   JSON encoded message
+        #
+        # @return [undefined]
+        #
         def publish(raw_message)
           message = MessageParser.parse(raw_message)
           process message
         end
 
-        # Sends message to the listener
+        # Sends message to the listener if the listener responds to given type
         #
         # @param [Listenable] message
+        #
+        # @return [undefined]
         #
         def process(message)
           method = :"#{message.class.type}_received"

@@ -12,6 +12,9 @@ module Bitbot
       #
       # @return [String]
       #
+      # @example
+      #  Trade.type #=> "trade"
+      #
       def type
         @_type ||= name.split("::").last.downcase
       end

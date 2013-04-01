@@ -6,6 +6,8 @@ module Bitbot
     module Providers
       class MtGox
         module Messages
+          # Finds correct message class using given operation
+          #
           # @param [String] operation
           #
           # @return [Class] A subclass of Message
