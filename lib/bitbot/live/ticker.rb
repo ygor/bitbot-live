@@ -2,6 +2,8 @@ require "virtus"
 
 module Bitbot
   module Live
+    # Market summary
+    #
     class Ticker
       extend Listenable
       include Virtus::ValueObject

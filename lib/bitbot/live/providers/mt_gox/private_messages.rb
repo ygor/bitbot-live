@@ -29,10 +29,7 @@ module Bitbot
             # @return [Depth]
             #
             def generate
-              price = {
-                value: price_int / 1_000_00,
-                currency: currency
-              }
+              price = Utils.parse_price(price_int, currency)
               Depth.new(price: price)
             end
           end
@@ -43,8 +40,8 @@ module Bitbot
             include Virtus::ValueObject
 
             attribute :trade_type,     String
-            attribute :amount_int,     String
-            attribute :price_int,      String
+            attribute :amount_int,     BigDecimal
+            attribute :price_int,      BigDecimal
             attribute :price_currency, String
 
             # Converts MtGox trade message to actual Trade object
@@ -54,11 +51,8 @@ module Bitbot
             def generate
               Trade.new(
                 bid: trade_type == "bid",
-                amount: BigDecimal(amount_int) / 1_0000_0000,
-                price: {
-                  value: BigDecimal(price_int) / 1_000_00,
-                  currency: price_currency
-                }
+                amount: amount_int / 1_0000_0000,
+                price: Utils.parse_price(price_int, price_currency)
               )
             end
           end
@@ -68,36 +62,29 @@ module Bitbot
           class TickerMessage
             include Virtus::ValueObject
 
-            class ValueWrapper
-              include Virtus
-              attribute :value_int, BigDecimal
-              attribute :currency, String
-            end
-
-            class Writer < Virtus::Attribute::Writer::Coercible
-              def coerce(hash)
-                value = ValueWrapper.new(hash)
-                util = self.class
-
-                {
-                  util.value_column => value.value_int / util.divider,
-                  currency: value.currency
-                }
+            # Coerces objects with value and currency
+            #
+            class ValueWriter < Virtus::Attribute::Writer::Coercible
+              def self.parse(type, hash)
+                value, currency = hash.values_at("value_int", "currency")
+                Utils.public_send(:"parse_#{type}", BigDecimal(value), currency)
               end
             end
 
             # Fetches price from ticker message
             #
-            class PriceWriter < Writer
-              def self.value_column; :value; end
-              def self.divider; 1_000_00; end
+            class PriceWriter < ValueWriter
+              def coerce(hash)
+                self.class.parse(:price, hash)
+              end
             end
 
             # Fetches volume from ticker message
             #
-            class VolumeWriter < Writer
-              def self.value_column; :size; end
-              def self.divider; 1_0000_0000; end
+            class VolumeWriter < ValueWriter
+              def coerce(hash)
+                self.class.parse(:volume, hash)
+              end
             end
 
             attribute :avg,        Price,  writer_class: PriceWriter

@@ -2,6 +2,8 @@ require "virtus"
 
 module Bitbot
   module Live
+    # Shows a buy or a sell that happened in a market
+    #
     class Trade
       extend Listenable
       include Virtus::ValueObject

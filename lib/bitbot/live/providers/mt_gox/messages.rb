@@ -15,7 +15,10 @@ module Bitbot
             const_get(klass_name)
           end
 
+          # Base class for messages
+          #
           # @abstract
+          #
           class Message
             include Virtus::ValueObject
           end

@@ -4,6 +4,10 @@ require "em-websocket-client"
 module Bitbot
   module Live
     module Providers
+      # MtGox WebSocket provider
+      #
+      # @see https://en.bitcoin.it/wiki/MtGox/API/Streaming
+      #
       class MtGox
         HOST = "https://websocket.mtgox.com:80/mtgox?Currency=USD"
 

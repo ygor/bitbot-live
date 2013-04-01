@@ -25,7 +25,7 @@ FeatureEnvy:
   enabled: true
   exclude: []
 IrresponsibleModule:
-  enabled: false # TODO: enable ASAP
+  enabled: true
   exclude: []
 LargeClass:
   enabled: true

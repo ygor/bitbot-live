@@ -15,6 +15,7 @@ require "bitbot/live/status"
 require "bitbot/live/statuses"
 
 require "bitbot/live/providers/mt_gox"
+require "bitbot/live/providers/mt_gox/utils"
 require "bitbot/live/providers/mt_gox/messages"
 require "bitbot/live/providers/mt_gox/private_messages"
 require "bitbot/live/providers/mt_gox/message_parser"
