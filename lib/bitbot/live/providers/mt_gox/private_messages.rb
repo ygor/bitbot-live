@@ -6,10 +6,14 @@ module Bitbot
     module Providers
       class MtGox
         module PrivateMessages
+          # Finds private message class using given type
+          #
           # @param [String] type
           #
           # @return [Class]
           #   A class of one of the PrivateMessages classes
+          #
+          # @api private
           #
           def self.get_class(type)
             klass_name = Inflecto.camelize(type) + "Message"
@@ -27,6 +31,8 @@ module Bitbot
             # Converts MtGox depth message to actual Depth object
             #
             # @return [Depth]
+            #
+            # @api private
             #
             def generate
               price = Utils.parse_price(price_int, currency)
@@ -48,6 +54,8 @@ module Bitbot
             #
             # @return [Trade]
             #
+            # @api private
+            #
             def generate
               Trade.new(
                 bid: trade_type == "bid",
@@ -65,6 +73,12 @@ module Bitbot
             # Coerces objects with value and currency
             #
             class ValueWriter < Virtus::Attribute::Writer::Coercible
+              # Parses price or volume
+              #
+              # @return [Hash]
+              #
+              # @api private
+              #
               def self.parse(type, hash)
                 value, currency = hash.values_at("value_int", "currency")
                 Utils.public_send(:"parse_#{type}", BigDecimal(value), currency)
@@ -74,6 +88,12 @@ module Bitbot
             # Fetches price from ticker message
             #
             class PriceWriter < ValueWriter
+              # Takes a hash and makes it compatible with Price attributes
+              #
+              # @return [Hash]
+              #
+              # @api private
+              #
               def coerce(hash)
                 self.class.parse(:price, hash)
               end
@@ -82,6 +102,12 @@ module Bitbot
             # Fetches volume from ticker message
             #
             class VolumeWriter < ValueWriter
+              # Takes a hash and makes it compatible with Volume attributes
+              #
+              # @return [Hash]
+              #
+              # @api private
+              #
               def coerce(hash)
                 self.class.parse(:volume, hash)
               end
@@ -98,6 +124,8 @@ module Bitbot
             # Converts MtGox ticker message to actual Ticker object
             #
             # @return [Ticker]
+            #
+            # @api private
             #
             def generate
               Ticker.new(
@@ -117,6 +145,14 @@ module Bitbot
           class ResultMessage
             include Virtus::ValueObject
 
+            # Coverts result message to actual Result object
+            #
+            # TODO
+            #
+            # @return [OpenStruct]
+            #
+            # @api private
+            #
             def generate
               OpenStruct.new
             end

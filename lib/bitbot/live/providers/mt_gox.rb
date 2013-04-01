@@ -21,6 +21,8 @@ module Bitbot
         #
         # @return [undefined]
         #
+        # @api public
+        #
         def initialize(listener, client = EM::WebSocketClient)
           @listener = listener
           @client   = client
@@ -29,6 +31,8 @@ module Bitbot
         # Connects with the websocket to receive messages
         #
         # @return [undefined]
+        #
+        # @api public
         #
         def start
           @socket = @client.connect(HOST)
@@ -44,6 +48,8 @@ module Bitbot
         #
         # @return [undefined]
         #
+        # @api private
+        #
         def connected
           process Statuses::CONNECTED
         end
@@ -51,6 +57,8 @@ module Bitbot
         # Sends disconnected status notification to the listener
         #
         # @return [undefined]
+        #
+        # @api private
         #
         def disconnected
           process Statuses::DISCONNECTED
@@ -65,6 +73,8 @@ module Bitbot
         #
         # @return [undefined]
         #
+        # @api private
+        #
         def error(raw_message)
           process Status.error(raw_message)
         end
@@ -76,6 +86,8 @@ module Bitbot
         #
         # @return [undefined]
         #
+        # @api private
+        #
         def publish(raw_message)
           message = MessageParser.parse(raw_message)
           process message
@@ -86,6 +98,8 @@ module Bitbot
         # @param [Listenable] message
         #
         # @return [undefined]
+        #
+        # @api private
         #
         def process(message)
           method = :"#{message.class.type}_received"

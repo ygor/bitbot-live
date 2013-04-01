@@ -14,7 +14,13 @@ module Bitbot
 
       # Returns true if trade is not a bid trade
       #
+      # @example
+      #  Trade.new(bid: true).ask? #=> false
+      #
       # @return [Boolean]
+      #
+      # @api public
+      #
       def ask?
         !bid?
       end

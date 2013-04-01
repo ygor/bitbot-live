@@ -12,6 +12,8 @@ module Bitbot
           #
           # @return [Class] A subclass of Message
           #
+          # @api private
+          #
           def self.get_class(operation)
             klass_name = Inflecto.camelize(operation) + "Message"
             const_get(klass_name)
@@ -38,6 +40,12 @@ module Bitbot
           # A server notification, answer to a subscription, server warning, etc
           #
           class RemarkMessage < Message
+            # Builds Remark object
+            #
+            # @return [Remark]
+            #
+            # @api private
+            #
             def self.build(*)
               new
             end
@@ -50,9 +58,14 @@ module Bitbot
           # @abstract
           #
           class PrivateMessage < Message
+            # Builds a core object depending of the private message
+            #
             # @param [Hash] data
             #
-            # @return [PrivateMessage]
+            # @return [Object]
+            #   An instance of Depth, Ticker or Trade
+            #
+            # @api private
             #
             def self.build(data)
               type = data.fetch("private")

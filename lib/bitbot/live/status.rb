@@ -8,6 +8,13 @@ module Bitbot
       extend Listenable
       include Virtus::ValueObject
 
+      # Creates an error status
+      #
+      # @return [Status]
+      #   Error status instance with given body
+      #
+      # @api private
+      #
       def self.error(body)
         new(type: "error", body: body)
       end

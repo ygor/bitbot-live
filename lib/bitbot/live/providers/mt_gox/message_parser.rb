@@ -14,6 +14,8 @@ module Bitbot
           #
           # @return [Messages::Message]
           #
+          # @api private
+          #
           def self.parse(raw_message)
             data = JSON.parse(raw_message)
             operation = data.fetch("op")

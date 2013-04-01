@@ -10,10 +10,12 @@ module Bitbot
     module Listenable
       # Returns type of a class
       #
-      # @return [String]
-      #
       # @example
       #  Trade.type #=> "trade"
+      #
+      # @return [String]
+      #
+      # @api public
       #
       def type
         @_type ||= name.split("::").last.downcase
