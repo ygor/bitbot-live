@@ -7,6 +7,9 @@ module Bitbot
       class MtGox
         module Messages
           # @param [String] operation
+          #
+          # @return [Class] A subclass of Message
+          #
           def self.get_class(operation)
             klass_name = Inflecto.camelize(operation) + "Message"
             const_get(klass_name)
