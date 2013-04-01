@@ -1,11 +1,16 @@
 class ListenerMock
-  attr_reader :messages
+  attr_reader :trades, :statuses
 
   def initialize
-    @messages = []
+    @trades = []
+    @statuses = []
   end
 
-  def message_received(message)
-    @messages << message
+  def trade_received(trade)
+    @trades << trade
+  end
+
+  def status_received(status)
+    @statuses << status
   end
 end

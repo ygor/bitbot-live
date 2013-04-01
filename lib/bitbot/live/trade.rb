@@ -3,6 +3,7 @@ require "virtus"
 module Bitbot
   module Live
     class Trade
+      extend Listenable
       include Virtus::ValueObject
 
       attribute :bid,      Boolean

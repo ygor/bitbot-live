@@ -1,17 +1,7 @@
 require "bitbot/live"
 
 class MyListener
-  def message_received(message)
-    if message.is_a?(Bitbot::Live::Ticker)
-      show_ticker(message)
-    elsif message.is_a?(Bitbot::Live::Status)
-      puts message.inspect
-    end
-  end
-
-  private
-
-  def show_ticker(ticker)
+  def ticker_received(ticker)
     content = [
       "High: %5.5f" % ticker.high.value,
       "Low: %5.5f"  % ticker.low.value,
@@ -20,6 +10,10 @@ class MyListener
     ].join(" | ")
 
     puts content
+  end
+
+  def status_notification_received(status)
+    puts status.inspect
   end
 end
 

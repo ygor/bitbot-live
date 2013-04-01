@@ -5,6 +5,7 @@ module Bitbot
     # Object to notify listeners about connection status
     #
     class Status
+      extend Listenable
       include Virtus::ValueObject
 
       def self.error(body)

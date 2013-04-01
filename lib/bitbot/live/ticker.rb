@@ -3,6 +3,7 @@ require "virtus"
 module Bitbot
   module Live
     class Ticker
+      extend Listenable
       include Virtus::ValueObject
 
       attribute :high,       Price

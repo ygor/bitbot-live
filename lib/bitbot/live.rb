@@ -5,6 +5,7 @@ module Bitbot
   end
 end
 
+require "bitbot/live/listenable"
 require "bitbot/live/price"
 require "bitbot/live/volume"
 require "bitbot/live/trade"

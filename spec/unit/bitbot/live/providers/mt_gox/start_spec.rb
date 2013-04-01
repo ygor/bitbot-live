@@ -21,9 +21,7 @@ describe Providers::MtGox, "#start" do
     subject
     socket.callback.call
 
-    messages = listener.messages
-    expect(messages.size).to eq(1)
-    expect(messages.last.type).to eq("connected")
+    expect(listener.statuses).to eq([Statuses::CONNECTED])
   end
 
   it "reconnects after disconnect" do
@@ -37,31 +35,27 @@ describe Providers::MtGox, "#start" do
     subject
     socket.disconnect.call
 
-    messages = listener.messages
-    expect(messages.size).to eq(1)
-    expect(messages.last.type).to eq("disconnected")
+    expect(listener.statuses).to eq([Statuses::DISCONNECTED])
   end
 
   it "sends notification after error" do
     subject
     socket.errback.call("Ouch")
 
-    messages = listener.messages
-    expect(messages.size).to eq(1)
-    expect(messages.last.type).to eq("error")
-    expect(messages.last.body).to eq("Ouch")
+    statuses = listener.statuses
+    expect(statuses.size).to eq(1)
+    expect(statuses.last.type).to eq("error")
+    expect(statuses.last.body).to eq("Ouch")
   end
 
   it "sends message after receive" do
     subject
 
-    message = stub
-    Providers::MtGox::MessageParser.stub(:parse).with("RAW") { message }
+    trade = Trade.new
+    Providers::MtGox::MessageParser.stub(:parse).with("RAW") { trade }
 
     socket.stream.call("RAW")
 
-    messages = listener.messages
-    expect(messages.size).to eq(1)
-    expect(messages.last).to eq(message)
+    expect(listener.trades).to eq([trade])
   end
 end

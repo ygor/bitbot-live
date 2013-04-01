@@ -41,8 +41,16 @@ module Bitbot
           process message
         end
 
+        # Sends message to the listener
+        #
+        # @param [Listenable] message
+        #
         def process(message)
-          @listener.message_received(message)
+          method = :"#{message.class.type}_received"
+
+          if @listener.respond_to?(method)
+            @listener.public_send(method, message)
+          end
         end
       end
     end
